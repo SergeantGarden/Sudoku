@@ -14,19 +14,24 @@
  *  limitations under the License.
  */
 
-window.onload = function(e)
+function GameScene(engine)
 {
-    /* BUG: CANNOT INITIATE MORE THAN ONE ENGINE
-     * possibly scheduleframe??                                         
-     */
-    $.getScript("engine/Engine.js", function() 
+    Scene.call(this);
+    
+    GameScene.prototype.Update = function(input, dt)
     {
-        var engine = new Engine({x: 400, y: 320 }, "Surowku");
-        engine.Resize({x:800, y: 640});
-        engine.PreloadScripts("game/GameScene.js");
-        engine.onLoaded(function() {
-            var scene = new GameScene(engine);
-            engine.Start(scene);
-        });
-    });
-};
+        Scene.prototype.Update.call(this, input, dt);
+    };
+    
+    GameScene.prototype.Draw = function(context)
+    {
+        context.save();
+        context.fillStyle = "black";
+        context.fillRect(0,0, Engine.currentGame[engine.gameTitle].originalResolution.x, Engine.currentGame[engine.gameTitle].originalResolution.y);
+        context.restore();
+        
+        Scene.prototype.Draw.call(this, context);
+    };
+}
+
+GameScene.prototype = Object.create(Scene.prototype);
