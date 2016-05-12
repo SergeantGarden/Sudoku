@@ -16,7 +16,7 @@
 
 function SurowkuTile(position, size)
 {
-    GameObject.call(this, position, 0, new Vector(1,1), null, 0);
+    GameObject.call(this, position, 0, new Vector(1,1), null, false);
     
     SurowkuTile.prototype.Update = function(input, dt)
     {
