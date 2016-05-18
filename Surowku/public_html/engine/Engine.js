@@ -59,6 +59,42 @@ function Engine(resolution, title, canvasParent)
         engine.input = new Input(["Keyboard", "Mouse", "Controllers"], engine.canvas);
     });
     
+    scheduleFrame = function(callback) 
+    {
+        return window.requestAnimationFrame(callback);
+    };
+    
+    cancelFrame = function(loop)
+    {
+        window.cancelAnimationFrame(loop);
+    };
+    
+    gameLoop = function(engine)
+    {
+        engine.lastFrame = new Date().getTime();
+        engine.loop = true;
+        engine.currentFrame = 0;
+        
+        engine.gameLoopCallback = function()
+        {
+            var now = new Date().getTime();
+            engine.currentFrame++;
+            engine.loop = scheduleFrame(engine.gameLoopCallback);
+            var dt = now - engine.lastFrame;
+            if(dt > engine.maxFrameTime) { dt = engine.maxFrameTime; }
+            
+            Engine.currentGame[engine.gameTitle].currentScene.Update(engine.input, dt/1000);
+            Draw(engine.canvas.getContext('2d'), engine);
+            if(engine.input !== null) 
+            {
+                if(engine.input.keyboard.keyPressed(KEY_CODE.PLUS)) Engine.SetAudioVolume((Engine.audioVolume + 0.1));
+                if(engine.input.keyboard.keyPressed(KEY_CODE.SUBTRACT)) Engine.SetAudioVolume((Engine.audioVolume - 0.1));
+                engine.input.Update(dt/1000);
+            }
+            engine.lastFrame = now;
+        };
+        scheduleFrame(engine.gameLoopCallback);
+    };
     
     engine.Start = function(scene)
     {
@@ -70,7 +106,7 @@ function Engine(resolution, title, canvasParent)
         if(scene instanceof Scene)
         {
             Engine.currentGame[engine.gameTitle].currentScene = scene;
-            gameLoop();
+            gameLoop(engine);
         }else
         {
             console.log("the scene has to be an instance of Scene");
@@ -138,44 +174,7 @@ function Engine(resolution, title, canvasParent)
         callback();
     };
     
-    scheduleFrame = function(callback) 
-    {
-        return window.requestAnimationFrame(callback);
-    };
-    
-    cancelFrame = function(loop)
-    {
-        window.cancelAnimationFrame(loop);
-    };
-    
-    gameLoop = function()
-    {
-        engine.lastFrame = new Date().getTime();
-        engine.loop = true;
-        engine.currentFrame = 0;
-        
-        engine.gameLoopCallback = function()
-        {
-            var now = new Date().getTime();
-            engine.currentFrame++;
-            engine.loop = scheduleFrame(engine.gameLoopCallback);
-            var dt = now - engine.lastFrame;
-            if(dt > engine.maxFrameTime) { dt = engine.maxFrameTime; }
-            
-            Engine.currentGame[engine.gameTitle].currentScene.Update(engine.input, dt/1000);
-            Draw(engine.canvas.getContext('2d'));
-            if(engine.input !== null) 
-            {
-                if(engine.input.keyboard.keyPressed(KEY_CODE.PLUS)) Engine.SetAudioVolume((Engine.audioVolume + 0.1));
-                if(engine.input.keyboard.keyPressed(KEY_CODE.SUBTRACT)) Engine.SetAudioVolume((Engine.audioVolume - 0.1));
-                engine.input.Update(dt/1000);
-            }
-            engine.lastFrame = now;
-        };
-        scheduleFrame(engine.gameLoopCallback);
-    };
-    
-    function Draw(context)
+    function Draw(context, engine)
     {
         context.clearRect(0,0, Engine.currentGame[engine.gameTitle].resolution.x * engine.resizeScale.x, Engine.currentGame[engine.gameTitle].resolution.y * engine.resizeScale.y);
         context.fillStyle = "#000";
