@@ -16,14 +16,13 @@
 
 window.onload = function(e)
 {
-    /* BUG: CANNOT INITIATE MORE THAN ONE ENGINE
-     * possibly scheduleframe??                                         
+    /* BUG: WHEN INITIATE MORE THAN ONE ENGINE INPUT DOES NOT REGISTER.
      */
     $.getScript("engine/Engine.js", function() 
     {
         var engine = new Engine({x: 400, y: 320 }, "Surowku");
         engine.Resize({x:800, y: 640});
-        engine.PreloadScripts("game/GameScene.js, game/SurowkuTile.js");
+        engine.PreloadScripts("game/GameScene.js, game/SurowkuTile.js, game/SurowkuNumber.js");
         engine.onLoaded(function() {
             var scene = new GameScene(engine);
             engine.Start(scene);
