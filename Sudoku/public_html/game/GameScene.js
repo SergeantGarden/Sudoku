@@ -20,13 +20,8 @@ function GameScene(engine)
     
     var size = new Vector(32,32);
     var positionOffset = new Vector(70,25);
-    for(var i = 0; i < 9; i++)
-    {
-        for(var j = 0; j < 9; j++)
-        {
-            this.AddGameObject(new SurowkuTile(new Vector(positionOffset.x + (j * size.x) + j, positionOffset.y + (i * size.y) + i), size), "background");
-        }
-    }
+    
+    this.AddGameObject(new Grid(new Vector(200,160), size, this), "background");
     
     GameScene.prototype.Update = function(input, dt)
     {

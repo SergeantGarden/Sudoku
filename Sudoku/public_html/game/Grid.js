@@ -1,5 +1,5 @@
 /* 
- * Copyright 2016 hugo.
+ * Copyright 2016 Hugo Mater.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-function Tile(position, size)
+function Grid(position, tileSize, scene)
 {
     GameObject.call(this, position, 0, new Vector(1,1), null, false);
     
-    Tile.prototype.Update = function(input, dt)
+    var gridRows = [];
+    var offset = { x: tileSize.x * 2.5,
+                   y: tileSize.y * 2.5 };
+               
+    for(var j = 0; j < 9; j++)
     {
-        
-    };
-    
-    Tile.prototype.Draw = function(context)
-    {
-        context.save();
-        context.fillStyle = "white";
-        context.fillRect(this.position.x - size.x / 2, this.position.y - size.y / 2, size.x, size.y);
-        context.restore();
-    };
-};
+        scene.AddGameObject(new Block(new Vector(-offset.x - 10 + position.x + ((j % 3) * (offset.x + (tileSize.x / 1.4))), -offset.y - 10 + position.y + Math.floor(j / 3) * (offset.y + (tileSize.y / 1.4))), tileSize, scene), "background");
+    }
+}
 
-Tile.prototype = Object.create(GameObject.prototype);
+Grid.prototype = Object.create(GameObject.prototype);
