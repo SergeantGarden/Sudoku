@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-function SurowkuTile(position, size)
+function SurowkuTile(position, size, surowkuNumber)
 {
     GameObject.call(this, position, 0, new Vector(1,1), null, false);
+    
+    this.number = surowkuNumber;
     
     SurowkuTile.prototype.Update = function(input, dt)
     {

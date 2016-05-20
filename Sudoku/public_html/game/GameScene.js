@@ -18,6 +18,18 @@ function GameScene(engine)
 {
     Scene.call(this);
     
+    var size = new Vector(32,32);
+    var positionOffset = new Vector(70,25);
+    for(var i = 0; i < 9; i++)
+    {
+        for(var j = 0; j < 9; j++)
+        {
+            var surowkuNumber = new SurowkuNumber(new Vector(positionOffset.x + (j * size.x) + j, positionOffset.y + (i * size.y) + i), j + 1);
+            this.AddGameObject(new SurowkuTile(new Vector(positionOffset.x + (j * size.x) + j, positionOffset.y + (i * size.y) + i), size, surowkuNumber), "background");
+            this.AddGameObject(surowkuNumber, "game");
+        }
+    }
+    
     GameScene.prototype.Update = function(input, dt)
     {
         Scene.prototype.Update.call(this, input, dt);
