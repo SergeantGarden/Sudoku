@@ -24,9 +24,7 @@ function GameScene(engine)
     {
         for(var j = 0; j < 9; j++)
         {
-            var surowkuNumber = new SurowkuNumber(new Vector(positionOffset.x + (j * size.x) + j, positionOffset.y + (i * size.y) + i), j + 1);
-            this.AddGameObject(new SurowkuTile(new Vector(positionOffset.x + (j * size.x) + j, positionOffset.y + (i * size.y) + i), size, surowkuNumber), "background");
-            this.AddGameObject(surowkuNumber, "game");
+            this.AddGameObject(new SurowkuTile(new Vector(positionOffset.x + (j * size.x) + j, positionOffset.y + (i * size.y) + i), size), "background");
         }
     }
     
