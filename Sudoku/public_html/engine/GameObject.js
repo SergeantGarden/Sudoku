@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-function GameObject(position, rotation, scale, sprite, moveable)
+function GameObject(position, rotation, scale, sprite, moveable, collision)
 {
     var _position = position || new Vector(0,0);
     var _rotation = rotation || 0;
@@ -26,17 +26,24 @@ function GameObject(position, rotation, scale, sprite, moveable)
      
     var _sprite = sprite || null;
     
+    var _collision = null;
     var _hasCollision = true;
     var _collisionProperties = {};
-    if(_sprite !== null)
+    if(collision === undefined || collision === null || !(collision instanceof Collision))
     {
-        _collisionProperties.size = {x: _sprite.size.x, y: _sprite.size.y};
+        if(_sprite !== null)
+        {
+            _collisionProperties.size = {x: _sprite.size.x, y: _sprite.size.y};
+        }else
+        {
+            _hasCollision = false;
+            _collisionProperties.size = {x: 0, y: 0};
+        }
+        _collision = new Collision(COLLISION_TYPE.RECTANGLE, this, _collisionProperties);
     }else
     {
-        _hasCollision = false;
-        _collisionProperties.size = {x: 0, y: 0};
+        _collision = collision;
     }
-    var _collision = new Collision(COLLISION_TYPE.RECTANGLE, this, _collisionProperties);
     
     Object.defineProperty(this, "position", {
         get: function() { return _position; },
