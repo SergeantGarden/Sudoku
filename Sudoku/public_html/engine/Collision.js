@@ -83,6 +83,15 @@ Collision.CheckCircles = function(c1, c2)
     return [false, "none", "none"];
 };
 
+Collision.CheckCirclePoint = function(c, v)
+{
+    if(c.radius > c.player.position.distanceToPoint(v))
+    {
+        return [true, "none", "none"];
+    }
+    return [false, "none", "none"];
+};
+
 Collision.CheckRectangles = function(r1, r2)
 {
     if(r1.centerCornerLength + r2.centerCornerLength > r1.player.position.distanceToPoint(r2.player.position))
@@ -123,6 +132,21 @@ Collision.CheckRectangles = function(r1, r2)
             if(r1.player.position.distanceToPoint(r2.player.position) < r1.size.x + r2.size.x)
             {
                 return [true, "unkown", "unkown"];
+            }
+        }
+    }
+    return [false, "none", "none"];
+};
+
+Collision.CheckRectanglePoint = function(r1, v)
+{
+    if(r1.centerCornerLength > r1.player.position.distanceToPoint(v))
+    {
+        if(r1.min.x <= v.x && r1.max.x >= v.x)
+        {
+            if(r1.min.y <= v.y && r1.max.y >= v.y)
+            {
+                return [true, "none", "none"];
             }
         }
     }
