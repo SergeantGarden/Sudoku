@@ -107,8 +107,10 @@ var MOUSE_BUTTON =
     Middle: 4
 };
 
-function Input(gameCanvas)
+function Input(engine, gameCanvas)
 {
+    Input.engine = engine;
+    Input.canvas = gameCanvas;
     /* -----------------------Keyboard----------------------------------- */
     Input.keyboard = {};
     
@@ -207,7 +209,24 @@ function Input(gameCanvas)
         if(!mouseInfo.mouseClicked) return false;
         if(targetObject !== null && targetObject !== undefined)
         {
-            if(mouseInfo.target !== targetObject) return false;
+            if(targetObject.hasOwnProperty("collision"))
+            {
+                var mouseVector = new Vector(mouseInfo.x, mouseInfo.y);
+                if(Input.engine.scale.x * Input.engine.resizeScale.x !== 1 || Input.engine.scale.y * Input.engine.resizeScale.y !== 1)
+                {
+                    mouseVector = new Vector(mouseInfo.x / (Input.engine.scale.x * Input.engine.resizeScale.x), mouseInfo.y / (Input.engine.scale.y * Input.engine.resizeScale.y));
+                }
+                if(targetObject.collision.type === COLLISION_TYPE.CIRCLE)
+                {
+                    if(!Collision.CheckCirclePoint(targetObject.collision, mouseVector)[0]) return false;
+                }else if(targetObject.collision.type === COLLISION_TYPE.RECTANGLE)
+                {
+                    if(!Collision.CheckRectanglePoint(targetObject.collision, mouseVector)[0]) return false;
+                }
+            }else
+            {
+                if(mouseInfo.target !== targetObject) return false;
+            }
         }
         if(button !== null && button !== undefined)
         {
@@ -221,7 +240,24 @@ function Input(gameCanvas)
         if(!mouseInfo.mouseDown) return false;
         if(targetObject !== null && targetObject !== undefined)
         {
-            if(mouseInfo.target !== targetObject) return false;
+            if(targetObject.hasOwnProperty("collision"))
+            {
+                var mouseVector = new Vector(mouseInfo.x, mouseInfo.y);
+                if(Input.engine.scale.x * Input.engine.resizeScale.x !== 1 || Input.engine.scale.y * Input.engine.resizeScale.y !== 1)
+                {
+                    mouseVector = new Vector(mouseInfo.x / (Input.engine.scale.x * Input.engine.resizeScale.x), mouseInfo.y / (Input.engine.scale.y * Input.engine.resizeScale.y));
+                }
+                if(targetObject.collision.type === COLLISION_TYPE.CIRCLE)
+                {
+                    if(!Collision.CheckCirclePoint(targetObject.collision, mouseVector)[0]) return false;
+                }else if(targetObject.collision.type === COLLISION_TYPE.RECTANGLE)
+                {
+                    if(!Collision.CheckRectanglePoint(targetObject.collision, mouseVector)[0]) return false;
+                }
+            }else
+            {
+                if(mouseInfo.target !== targetObject) return false;
+            }
         }
         if(button !== null && button !== undefined)
         {

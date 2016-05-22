@@ -56,7 +56,7 @@ function Engine(resolution, title, canvasParent)
     
     $.getScript("engine/Input.js", function()
     {
-        engine.input = new Input(engine.canvas);
+        engine.input = new Input(engine, engine.canvas);
     });
     
     scheduleFrame = function(callback) 
