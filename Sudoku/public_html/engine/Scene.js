@@ -75,6 +75,7 @@ function Scene(engine, delayTime)
                 {
                     this.private._gameObjects[layer].immoveable.push(gameobject);
                 }
+                return true;
             }else
             {
                 console.log("object must be instance of GameObject");

@@ -16,8 +16,9 @@
 
 Engine.currentGame = {};
 Engine.audioVolume = 1;
+Engine.engineFolderPath = "engine/";
 
-function Engine(resolution, title, canvasParent)
+function Engine(resolution, title, canvasParent, folderPath)
 {
     Engine.currentGame[title] = { gameAssets: {},
                                   gameAudio: {},
@@ -25,6 +26,10 @@ function Engine(resolution, title, canvasParent)
                                   originalResolution: resolution,
                                   currentScene: null,
                                   loadingScene: null};
+    if(folderPath)
+    {
+        Engine.engineFolderPath = folderPath;
+    }
 
     var engine = {};
     engine.loading = true;
@@ -54,7 +59,7 @@ function Engine(resolution, title, canvasParent)
     
     engine.input = null;
     
-    $.getScript("engine/Input.js", function()
+    $.getScript(Engine.engineFolderPath + "Input.js", function()
     {
         engine.input = new Input(engine, engine.canvas);
     });
@@ -510,7 +515,7 @@ function Engine(resolution, title, canvasParent)
         
         return image;
     }
-    engine.PreloadScripts(["engine/ExtendedMath.js", "engine/Sprite.js", "engine/Animation.js", "engine/Collision.js", "engine/GameObject.js", "engine/Scene.js", "engine/Particle.js", "engine/Emitter.js", "engine/ReadTextFile.js"]);
+    engine.PreloadScripts([Engine.engineFolderPath + "ExtendedMath.js", Engine.engineFolderPath + "Sprite.js", Engine.engineFolderPath + "Animation.js", Engine.engineFolderPath + "Collision.js", Engine.engineFolderPath + "GameObject.js", Engine.engineFolderPath + "Scene.js", Engine.engineFolderPath + "Particle.js", Engine.engineFolderPath + "Emitter.js", Engine.engineFolderPath + "ReadTextFile.js"]);
     
     return engine;
 };
