@@ -14,18 +14,62 @@
  * limitations under the License.
  */
 
-function Block(position, tileSize, scene)
+function Block(tiles, blockSize, gridSize)
 {
-    GameObject.call(this, position, 0, new Vector(1,1), null, false);
+    this.blockSize = blockSize;
+    this.sameNumbersAllowed = true;
+    this.availableNumbers = new Array();
+    this.tiles = new Array(this.blockSize);
     
-    var blockRows = [];
-    var offset = { x: tileSize.x * 1.5,
-                   y: tileSize.y * 1.5 };
-               
-    for(var j = 0; j < 9; j++)
+    if(Math.sqrt(gridSize) === blockSize)
     {
-        scene.AddGameObject(new Tile(new Vector(-offset.x + position.x + ((j % 3) * tileSize.x) + (j % 3), -offset.y + position.y + Math.floor(j / 3) * (tileSize.y + 1)), tileSize), "background");
+        this.sameNumbersAllowed = false;
+        for(var i = 1; i <= gridSize; ++i)
+        {
+            this.availableNumbers.push(i);
+        }
     }
-}
+    
+    for(var i = 0; i < this.blockSize; ++i)
+    {
+        this.tiles[i] = new Array(this.blockSize);
+        for(var j = 0; j < this.blockSize; ++j)
+        {
+            this.tiles[i][j] = tiles[(i * this.blockSize) + j];
+        }
+    }
+    
+    Block.prototype.SetBlockState = function(state)
+    {
+        for(var i = 0; i < this.blockSize; ++i)
+        {
+            for(var j = 0; j < this.blockSize; ++j)
+            {
+                this.tiles[i][j].state = state;
+            }
+        }
+    };
+    
+    Block.prototype.CheckBlock = function()
+    {
+        if(!this.sameNumbersAllowed)
+        {
+            var availableNumberCopy = this.availableNumbers.slice();
 
-Block.prototype = Object.create(GameObject.prototype);
+            for(var i = 0; i < this.blockSize; ++i)
+            {
+                for(var j = 0; j < this.blockSize; ++j)
+                {
+                    if(this.tiles[i][j].number === 0) continue;
+                    if(!availableNumberCopy.removeElement(this.tiles[i][j].number))
+                    {
+                        this.SetBlockState(TILE_STATE.Wrong);
+                        return false;
+                    }
+                }
+            }
+        }
+        this.SetBlockState(TILE_STATE.Normal);
+        return true;
+    };
+}

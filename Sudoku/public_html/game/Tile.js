@@ -14,34 +14,92 @@
  * limitations under the License.
  */
 
+var TILE_STATE = {
+    Normal: 0,
+    Wrong: 1,
+    Correct: 2
+};
+
 function Tile(position, size)
 {
     var collisionProperties = {};
     collisionProperties.size = { x: size.x, y: size.y };
     GameObject.call(this, position, 0, new Vector(1,1), null, false, new Collision(COLLISION_TYPE.RECTANGLE, this, collisionProperties));
+    var _private = {};
+    _private.number = 0;
+    _private.state = TILE_STATE.Normal;
+    _private.tileClicked = false;
+    _private._numberSolid = false;
+    _private._fontSize = (20/32) * size.x;
     
-    this.number = 0;
+    Object.defineProperty(this, "private", {
+        get: function() { return _private; }
+    });
+    
+    Object.defineProperty(this, "state", {
+        get: function() { return this.private.state; },
+        set: function(state) 
+        { 
+            if(this.private._numberSolid) return;
+            if(state >= 0 && state <= 2) this.private.state = state;
+        }
+    });
+    
+    Object.defineProperty(this, "number", {
+        get: function() { return this.private.number; }
+    });
+    
+    var colors = { white: "white",
+                   gray: "gray",
+                   red: "#FA5858",
+                   green: "lightgreen" };
+               
+    _private._color = colors.white;
+    
+    this.makeSolid = function()
+    {
+        this.private._numberSolid = true;
+        this.private.state = TILE_STATE.Normal;
+        this.private._color = colors.gray;
+    };
     
     Tile.prototype.Update = function(input, dt)
     {
-        if(input.mouse.OnMouseClick(this, MOUSE_BUTTON.Left))
+        switch(this.private.state)
         {
-            this.number++;
-            if(this.number > 9) this.number = 0;
+            case TILE_STATE.Normal:
+                this.private._color = colors.white;
+                if(this.private._numberHinted || this.private._numberSolid)
+                {
+                    this.private._color = colors.gray;
+                }
+                break;
+            case TILE_STATE.Wrong:
+                this.private._color = colors.red;
+                break;
+            case TILE_STATE.Correct:
+                this.private._color = colors.green;
+                break;
+        }
+        if(input.mouse.OnMouseClick(this, MOUSE_BUTTON.Left) && !this.private._numberSolid)
+        {
+            this.private.tileClicked = true;
+            this.private.number++;
+            if(this.private.number > 9) this.private.number = 1;
         }
     };
     
     Tile.prototype.Draw = function(context)
     {
-        //border strokerect
-        //strokeRect(position.x, position.y, size.x, size.y);
-        //strokeStyle "color";
         context.save();
-        context.fillStyle = "white";
+        context.fillStyle = this.private._color;
         context.fillRect(this.position.x - size.x / 2, this.position.y - size.y / 2, size.x, size.y);
-        context.font = "20px Arial";
+        context.font = this.private._fontSize + "px Arial";
         context.fillStyle = "black";
-        context.fillText(this.number, this.position.x, this.position.y);
+        if(this.private.tileClicked || this.private._numberSolid)
+        {
+            context.fillText(this.private.number, this.position.x - 5, this.position.y + 5);
+        }
         context.restore();
     };
 };

@@ -20,11 +20,14 @@ function GameScene(engine)
     
     var size = new Vector(32,32);
     var positionOffset = new Vector(70,25);
-    
-    this.AddGameObject(new Grid(new Vector(200,160), size, this), "background");
+    var difficulty = {
+                        easy: 0,
+                        normal: 1,
+                        hard: 2 };
     
     GameScene.prototype.Update = function(input, dt)
     {
+        if(input.keyboard.keyPressed(KEY_CODE.SPACE)) console.log(grid.CheckGrid());
         Scene.prototype.Update.call(this, input, dt);
     };
     
@@ -37,6 +40,15 @@ function GameScene(engine)
         
         Scene.prototype.Draw.call(this, context);
     };
+    
+    GameScene.prototype.CreateSudoku = function(difficulty)
+    {
+        var grid = new Sudoku(9, size, new Vector(120, 75), this);
+        
+        return grid;
+    };
+        
+    var grid = this.CreateSudoku();
 }
 
 GameScene.prototype = Object.create(Scene.prototype);

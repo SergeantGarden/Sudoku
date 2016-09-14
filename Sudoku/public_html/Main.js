@@ -22,7 +22,7 @@ window.onload = function(e)
     {
         var engine = new Engine({x: 400, y: 320 }, "Surowku");
         engine.Resize({x:800, y: 640});
-        engine.PreloadScripts("game/GameScene.js, game/Tile.js, game/Block.js, game/Grid.js");
+        engine.PreloadScripts("game/GameScene.js, game/Tile.js, game/Sudoku.js, game/Block.js");
         engine.onLoaded(function() {
             var scene = new GameScene(engine);
             engine.Start(scene);
