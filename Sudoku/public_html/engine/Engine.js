@@ -17,6 +17,7 @@
 Engine.currentGame = {};
 Engine.audioVolume = 1;
 Engine.engineFolderPath = "engine/";
+Engine.selectedGame = "none";
 
 function Engine(resolution, title, canvasParent, folderPath)
 {
@@ -26,6 +27,11 @@ function Engine(resolution, title, canvasParent, folderPath)
                                   originalResolution: resolution,
                                   currentScene: null,
                                   loadingScene: null};
+                              
+    if(Engine.selectedGame === "none")
+    {
+        Engine.selectedGame = title;
+    }
     if(folderPath)
     {
         Engine.engineFolderPath = folderPath;
@@ -40,6 +46,11 @@ function Engine(resolution, title, canvasParent, folderPath)
     
     engine.canvas = document.createElement('canvas');
     engine.canvas.oncontextmenu = function() { return false; };
+    engine.canvas.onclick = function() 
+    {
+        Engine.selectedGame = engine.gameTitle;
+        engine.unpauseGame();
+    };
     
     engine.canvas.id = engine.gameTitle;
     engine.canvas.width = Engine.currentGame[engine.gameTitle].resolution.x;
@@ -90,13 +101,22 @@ function Engine(resolution, title, canvasParent, folderPath)
             
             Engine.currentGame[engine.gameTitle].currentScene.Update(engine.input, dt/1000);
             Draw(engine.canvas.getContext('2d'), engine);
-            if(engine.input !== null) 
+            if(engine.input !== null && engine.gameTitle === Engine.selectedGame) 
             {
                 if(engine.input.keyboard.keyPressed(KEY_CODE.PLUS)) Engine.SetAudioVolume((Engine.audioVolume + 0.1));
                 if(engine.input.keyboard.keyPressed(KEY_CODE.SUBTRACT)) Engine.SetAudioVolume((Engine.audioVolume - 0.1));
-                engine.input.Update(dt/1000);
+                engine.input.Update(engine.input, dt/1000);
             }
             engine.lastFrame = now;
+            if(engine.gameTitle !== Engine.selectedGame)
+            {
+                var context = engine.canvas.getContext('2d');
+                context.save();
+                context.fillStyle = "rgba(0,0,0,0.6)";
+                context.fillRect(0, 0, Engine.currentGame[engine.gameTitle].originalResolution.x, Engine.currentGame[engine.gameTitle].originalResolution.y);
+                context.restore();
+                engine.pauseGame();
+            }
         };
         scheduleFrame(engine.gameLoopCallback);
     };
@@ -515,7 +535,7 @@ function Engine(resolution, title, canvasParent, folderPath)
         
         return image;
     }
-    engine.PreloadScripts([Engine.engineFolderPath + "ExtendedMath.js", Engine.engineFolderPath + "Sprite.js", Engine.engineFolderPath + "Animation.js", Engine.engineFolderPath + "Collision.js", Engine.engineFolderPath + "GameObject.js", Engine.engineFolderPath + "Scene.js", Engine.engineFolderPath + "Particle.js", Engine.engineFolderPath + "Emitter.js", Engine.engineFolderPath + "ReadTextFile.js"]);
+    engine.PreloadScripts([Engine.engineFolderPath + "ExtendedMath.js", Engine.engineFolderPath + "ClassExtensions.js", Engine.engineFolderPath + "Sprite.js", Engine.engineFolderPath + "Animation.js", Engine.engineFolderPath + "Collision.js", Engine.engineFolderPath + "GameObject.js", Engine.engineFolderPath + "Scene.js", Engine.engineFolderPath + "Particle.js", Engine.engineFolderPath + "Emitter.js", Engine.engineFolderPath + "ReadTextFile.js"]);
     
     return engine;
 };

@@ -119,6 +119,7 @@ function Input(engine, gameCanvas)
 
     $(document).keydown(function(e)
     {
+        keyIsPressed[e.keyCode] = false;
         keys[e.keyCode] = true;
 
         e.preventDefault();
@@ -368,10 +369,10 @@ function Input(engine, gameCanvas)
         return gamepads;
     };
     
-    Input.Update = function(dt)
+    Input.Update = function(input, dt)
     {
-        Input.keyboard.Update(dt);
-        Input.mouse.Update(dt);
+        input.keyboard.Update(dt);
+        input.mouse.Update(dt);
     };
     
     return Input;

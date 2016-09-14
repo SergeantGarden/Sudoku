@@ -14,6 +14,20 @@
  *  limitations under the License.
  */
 
+Math.arrayRandom = function(list)
+{
+    if(list.constructor === Array)
+    {
+        if(list.length > 0)
+        {
+            return list[Math.round(Math.random() * (list.length -1))];
+        }else { return false; }
+    }else
+    {
+        return false;
+    }
+};
+
 function Vector(x, y)
 {
     var _x = x;
